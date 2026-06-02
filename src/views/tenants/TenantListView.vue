@@ -131,6 +131,13 @@ async function loadTenants() {
   loading.value = true
 
   try {
+    const list = await tenancyApi.list().catch(() => [])
+
+    if (list.length > 0) {
+      tenants.value = list
+      return
+    }
+
     const current = await tenancyApi.current().catch(() => null)
     tenants.value = current ? [current] : []
   } catch {
