@@ -57,6 +57,15 @@ export interface CreateTenantRequest {
   adminPassword: string
 }
 
+export interface CreateUserRequest {
+  userName: string
+  email: string
+  displayName: string
+  password: string
+  isActive: boolean
+  roleIds: string[]
+}
+
 export interface CreateRoleRequest {
   code: string
   name: string

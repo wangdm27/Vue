@@ -1,5 +1,5 @@
 import { getArrayPayload, isRecord, pickBoolean, pickNumber, pickString, requestFirst, toStringArray } from './compat'
-import type { CreateRoleRequest, MenuNode, Permission, Role, UserListItem } from '@/types/rbac'
+import type { CreateRoleRequest, CreateUserRequest, MenuNode, Permission, Role, UserListItem } from '@/types/rbac'
 
 export interface UpdateUserRequest {
   displayName: string
@@ -23,8 +23,17 @@ export const rbacApi = {
     return getArrayPayload<unknown>(response).map(normalizeUser)
   },
 
+  async createUser(payload: CreateUserRequest) {
+    const response = await requestFirst<unknown>('post', endpoints.users, { data: payload })
+    return normalizeUser(response)
+  },
+
   updateUser(userId: string, payload: UpdateUserRequest) {
     return requestFirst<unknown>('put', endpoints.user(userId), { data: payload })
+  },
+
+  deleteUser(userId: string) {
+    return requestFirst<void>('delete', endpoints.user(userId))
   },
 
   assignUserRoles(userId: string, roleIds: string[]) {
