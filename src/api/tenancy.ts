@@ -1,4 +1,4 @@
-import { http } from './http'
+import { getArrayPayload, isRecord, pickBoolean, pickString, requestFirst } from './compat'
 import type { CreateTenantRequest, Tenant } from '@/types/rbac'
 
 export interface AddTenantUserRequest {
@@ -11,24 +11,47 @@ export interface UpdateTenantRequest {
   isActive: boolean
 }
 
+const endpoints = {
+  tenants: ['/tenants', '/tenancy/tenants'],
+  tenant: (tenantId: string) => [`/tenants/${tenantId}`, `/tenancy/tenants/${tenantId}`],
+  current: ['/tenants/current', '/tenancy/tenants/current'],
+  currentUsers: ['/tenants/current/users', '/tenancy/tenants/current/users'],
+}
+
 export const tenancyApi = {
-  // list() {
-  //   return http.post<unknown, Tenant[]>('/tenancy/tenants', { page: 1, pageSize: 20 })
-  // },
-
-  create(payload: CreateTenantRequest) {
-    return http.post<unknown, Tenant>('/tenancy/tenants', payload)
+  async list() {
+    const response = await requestFirst<unknown>('get', endpoints.tenants)
+    return getArrayPayload<unknown>(response).map(normalizeTenant)
   },
 
-  current() {
-    return http.get<unknown, Tenant>('/tenancy/tenants/current')
+  async create(payload: CreateTenantRequest) {
+    const response = await requestFirst<unknown>('post', endpoints.tenants, { data: payload })
+    return normalizeTenant(response)
   },
 
-  update(tenantId: string, payload: UpdateTenantRequest) {
-    return http.put<unknown, Tenant>(`/tenancy/tenants/${tenantId}`, payload)
+  async current() {
+    const response = await requestFirst<unknown>('get', endpoints.current)
+    return normalizeTenant(response)
+  },
+
+  async update(tenantId: string, payload: UpdateTenantRequest) {
+    const response = await requestFirst<unknown>('put', endpoints.tenant(tenantId), { data: payload })
+    return normalizeTenant(response)
   },
 
   addUser(payload: AddTenantUserRequest) {
-    return http.post<unknown, void>('/tenancy/tenants/current/users', payload)
+    return requestFirst<void>('post', endpoints.currentUsers, { data: payload })
   },
+}
+
+function normalizeTenant(payload: unknown): Tenant {
+  const item = isRecord(payload) ? payload : {}
+
+  return {
+    tenantId: pickString(item, 'tenantId', 'id'),
+    code: pickString(item, 'code', 'tenantCode'),
+    name: pickString(item, 'name', 'tenantName'),
+    isActive: pickBoolean(item, true, 'isActive', 'active', 'enabled'),
+    createdAt: pickString(item, 'createdAt', 'createTime', 'createdOn'),
+  }
 }

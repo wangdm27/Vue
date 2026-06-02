@@ -22,7 +22,7 @@ http.interceptors.request.use((config) => {
 })
 
 http.interceptors.response.use(
-  (response) => response.data,
+  (response) => unwrapApiResponse(response.data),
   (error) => {
     if (error.response?.status === 401) {
       const authStore = useAuthStore()
@@ -33,9 +33,52 @@ http.interceptors.response.use(
       return Promise.reject(error)
     }
 
-    const message = error.response?.data?.message ?? error.message ?? '请求失败'
-    ElMessage.error(message)
+    if (!error.config?.suppressError) {
+      const message = getErrorMessage(error)
+      ElMessage.error(message)
+    }
 
     return Promise.reject(error)
   },
 )
+
+function unwrapApiResponse(payload: unknown) {
+  if (!isRecord(payload)) {
+    return payload
+  }
+
+  if ('data' in payload) {
+    return payload.data
+  }
+
+  if ('result' in payload) {
+    return payload.result
+  }
+
+  if ('value' in payload) {
+    return payload.value
+  }
+
+  return payload
+}
+
+function getErrorMessage(error: any) {
+  const data = error.response?.data
+
+  if (isRecord(data)) {
+    return (
+      data.message ??
+      data.detail ??
+      data.title ??
+      data.error ??
+      error.message ??
+      '请求失败'
+    )
+  }
+
+  return error.message ?? '请求失败'
+}
+
+function isRecord(value: unknown): value is Record<string, any> {
+  return typeof value === 'object' && value !== null
+}
