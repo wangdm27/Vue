@@ -12,10 +12,9 @@ export interface UpdateTenantRequest {
 }
 
 const endpoints = {
-  tenants: ['/tenants', '/tenancy/tenants'],
-  tenant: (tenantId: string) => [`/tenants/${tenantId}`, `/tenancy/tenants/${tenantId}`],
-  current: ['/tenants/current', '/tenancy/tenants/current'],
-  currentUsers: ['/tenants/current/users', '/tenancy/tenants/current/users'],
+  tenants: ['/tenancy/tenants'],
+  current: ['/tenancy/tenants/current'],
+  currentUsers: ['/tenancy/tenants/current/users'],
 }
 
 export const tenancyApi = {

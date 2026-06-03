@@ -13,3 +13,63 @@
 2026-05-27T10:32:15.909Z | INFO | MCP MSSQL Server process started with PID: 51892
 2026-05-27T10:32:15.909Z | INFO | Signal handlers registered for SIGINT and SIGTERM
 2026-05-27T10:32:15.909Z | INFO | Press Ctrl+C to gracefully shutdown the server
+2026-06-02T09:42:58.991Z | INFO | Starting MCP MSSQL Server from: C:\Users\Administrator\AppData\Local\npm-cache\_npx\ffdd41263fd07c20\node_modules\@liangshanli\mcp-server-mssqlserver\src\server-final.js
+2026-06-02T09:42:58.994Z | INFO | Starting MCP MSSQL Server with environment: | {"MSSQL_SERVER":"192.168.4.162\\BI4SIGHT","MSSQL_PORT":"1433","MSSQL_USER":"sahuntmobi","MSSQL_DATABASE":"bi4sight_platform","MSSQL_SCHEMA":"dbo","MSSQL_ENCRYPT":"false","MSSQL_TRUST_SERVER_CERTIFICATE":"true","ALLOW_DDL":"false","ALLOW_DROP":"false","ALLOW_DELETE":"false"}
+2026-06-02T09:42:58.999Z | INFO | MCP MSSQL Server process started with PID: 33716
+2026-06-02T09:42:58.999Z | INFO | Signal handlers registered for SIGINT and SIGTERM
+2026-06-02T09:42:58.999Z | INFO | Press Ctrl+C to gracefully shutdown the server
+2026-06-02T09:42:59.051Z | INFO | Starting MCP MSSQL Server from: C:\Users\Administrator\AppData\Local\npm-cache\_npx\ffdd41263fd07c20\node_modules\@liangshanli\mcp-server-mssqlserver\src\server-final.js
+2026-06-02T09:42:59.054Z | INFO | Starting MCP MSSQL Server with environment: | {"MSSQL_SERVER":"192.168.4.162\\BI4SIGHT","MSSQL_PORT":"1433","MSSQL_USER":"sahuntmobi","MSSQL_DATABASE":"bi4sight_ads_template","MSSQL_SCHEMA":"dbo","MSSQL_ENCRYPT":"false","MSSQL_TRUST_SERVER_CERTIFICATE":"true","ALLOW_DDL":"false","ALLOW_DROP":"false","ALLOW_DELETE":"false"}
+2026-06-02T09:42:59.058Z | INFO | MCP MSSQL Server process started with PID: 32616
+2026-06-02T09:42:59.058Z | INFO | Signal handlers registered for SIGINT and SIGTERM
+2026-06-02T09:42:59.059Z | INFO | Press Ctrl+C to gracefully shutdown the server
+2026-06-02T09:42:59.116Z | INFO | Starting MCP MSSQL Server from: C:\Users\Administrator\AppData\Local\npm-cache\_npx\ffdd41263fd07c20\node_modules\@liangshanli\mcp-server-mssqlserver\src\server-final.js
+2026-06-02T09:42:59.119Z | INFO | Starting MCP MSSQL Server with environment: | {"MSSQL_SERVER":"192.168.4.162\\BI4SIGHT","MSSQL_PORT":"1433","MSSQL_USER":"sahuntmobi","MSSQL_DATABASE":"bi4sight_ads_template","MSSQL_SCHEMA":"dbo","MSSQL_ENCRYPT":"false","MSSQL_TRUST_SERVER_CERTIFICATE":"true","ALLOW_DDL":"false","ALLOW_DROP":"false","ALLOW_DELETE":"false"}
+2026-06-02T09:42:59.123Z | INFO | MCP MSSQL Server process started with PID: 42764
+2026-06-02T09:42:59.124Z | INFO | Signal handlers registered for SIGINT and SIGTERM
+2026-06-02T09:42:59.124Z | INFO | Press Ctrl+C to gracefully shutdown the server
+2026-06-02T09:42:59.161Z | INFO | Starting MCP MSSQL Server from: C:\Users\Administrator\AppData\Local\npm-cache\_npx\ffdd41263fd07c20\node_modules\@liangshanli\mcp-server-mssqlserver\src\server-final.js
+2026-06-02T09:42:59.163Z | INFO | Starting MCP MSSQL Server with environment: | {"MSSQL_SERVER":"192.168.4.162\\BI4SIGHT","MSSQL_PORT":"1433","MSSQL_USER":"sahuntmobi","MSSQL_DATABASE":"bi4sight_platform","MSSQL_SCHEMA":"dbo","MSSQL_ENCRYPT":"false","MSSQL_TRUST_SERVER_CERTIFICATE":"true","ALLOW_DDL":"false","ALLOW_DROP":"false","ALLOW_DELETE":"false"}
+2026-06-02T09:42:59.168Z | INFO | MCP MSSQL Server process started with PID: 19672
+2026-06-02T09:42:59.168Z | INFO | Signal handlers registered for SIGINT and SIGTERM
+2026-06-02T09:42:59.169Z | INFO | Press Ctrl+C to gracefully shutdown the server
+2026-06-02T09:42:59.184Z | INFO | Starting MCP MSSQL Server from: C:\Users\Administrator\AppData\Local\npm-cache\_npx\ffdd41263fd07c20\node_modules\@liangshanli\mcp-server-mssqlserver\src\server-final.js
+2026-06-02T09:42:59.186Z | INFO | Starting MCP MSSQL Server with environment: | {"MSSQL_SERVER":"192.168.4.162\\BI4SIGHT","MSSQL_PORT":"1433","MSSQL_USER":"sahuntmobi","MSSQL_DATABASE":"bi4sight_ads_1","MSSQL_SCHEMA":"dbo","MSSQL_ENCRYPT":"false","MSSQL_TRUST_SERVER_CERTIFICATE":"true","ALLOW_DDL":"false","ALLOW_DROP":"false","ALLOW_DELETE":"false"}
+2026-06-02T09:42:59.190Z | INFO | MCP MSSQL Server process started with PID: 42616
+2026-06-02T09:42:59.191Z | INFO | Signal handlers registered for SIGINT and SIGTERM
+2026-06-02T09:42:59.191Z | INFO | Press Ctrl+C to gracefully shutdown the server
+2026-06-02T09:42:59.311Z | INFO | Starting MCP MSSQL Server from: C:\Users\Administrator\AppData\Local\npm-cache\_npx\ffdd41263fd07c20\node_modules\@liangshanli\mcp-server-mssqlserver\src\server-final.js
+2026-06-02T09:42:59.314Z | INFO | Starting MCP MSSQL Server with environment: | {"MSSQL_SERVER":"192.168.4.162\\BI4SIGHT","MSSQL_PORT":"1433","MSSQL_USER":"sahuntmobi","MSSQL_DATABASE":"bi4sight_ads_1","MSSQL_SCHEMA":"dbo","MSSQL_ENCRYPT":"false","MSSQL_TRUST_SERVER_CERTIFICATE":"true","ALLOW_DDL":"false","ALLOW_DROP":"false","ALLOW_DELETE":"false"}
+2026-06-02T09:42:59.318Z | INFO | MCP MSSQL Server process started with PID: 38068
+2026-06-02T09:42:59.319Z | INFO | Signal handlers registered for SIGINT and SIGTERM
+2026-06-02T09:42:59.319Z | INFO | Press Ctrl+C to gracefully shutdown the server
+2026-06-03T02:12:00.489Z | INFO | Starting MCP MSSQL Server from: C:\Users\Administrator\AppData\Local\npm-cache\_npx\ffdd41263fd07c20\node_modules\@liangshanli\mcp-server-mssqlserver\src\server-final.js
+2026-06-03T02:12:00.491Z | INFO | Starting MCP MSSQL Server with environment: | {"MSSQL_SERVER":"192.168.4.162\\BI4SIGHT","MSSQL_PORT":"1433","MSSQL_USER":"sahuntmobi","MSSQL_DATABASE":"bi4sight_platform","MSSQL_SCHEMA":"dbo","MSSQL_ENCRYPT":"false","MSSQL_TRUST_SERVER_CERTIFICATE":"true","ALLOW_DDL":"false","ALLOW_DROP":"false","ALLOW_DELETE":"false"}
+2026-06-03T02:12:00.495Z | INFO | MCP MSSQL Server process started with PID: 23844
+2026-06-03T02:12:00.496Z | INFO | Signal handlers registered for SIGINT and SIGTERM
+2026-06-03T02:12:00.496Z | INFO | Press Ctrl+C to gracefully shutdown the server
+2026-06-03T02:12:00.524Z | INFO | Starting MCP MSSQL Server from: C:\Users\Administrator\AppData\Local\npm-cache\_npx\ffdd41263fd07c20\node_modules\@liangshanli\mcp-server-mssqlserver\src\server-final.js
+2026-06-03T02:12:00.526Z | INFO | Starting MCP MSSQL Server with environment: | {"MSSQL_SERVER":"192.168.4.162\\BI4SIGHT","MSSQL_PORT":"1433","MSSQL_USER":"sahuntmobi","MSSQL_DATABASE":"bi4sight_ads_1","MSSQL_SCHEMA":"dbo","MSSQL_ENCRYPT":"false","MSSQL_TRUST_SERVER_CERTIFICATE":"true","ALLOW_DDL":"false","ALLOW_DROP":"false","ALLOW_DELETE":"false"}
+2026-06-03T02:12:00.530Z | INFO | MCP MSSQL Server process started with PID: 30424
+2026-06-03T02:12:00.530Z | INFO | Signal handlers registered for SIGINT and SIGTERM
+2026-06-03T02:12:00.530Z | INFO | Press Ctrl+C to gracefully shutdown the server
+2026-06-03T02:12:00.546Z | INFO | Starting MCP MSSQL Server from: C:\Users\Administrator\AppData\Local\npm-cache\_npx\ffdd41263fd07c20\node_modules\@liangshanli\mcp-server-mssqlserver\src\server-final.js
+2026-06-03T02:12:00.549Z | INFO | Starting MCP MSSQL Server with environment: | {"MSSQL_SERVER":"192.168.4.162\\BI4SIGHT","MSSQL_PORT":"1433","MSSQL_USER":"sahuntmobi","MSSQL_DATABASE":"bi4sight_ads_template","MSSQL_SCHEMA":"dbo","MSSQL_ENCRYPT":"false","MSSQL_TRUST_SERVER_CERTIFICATE":"true","ALLOW_DDL":"false","ALLOW_DROP":"false","ALLOW_DELETE":"false"}
+2026-06-03T02:12:00.554Z | INFO | MCP MSSQL Server process started with PID: 5848
+2026-06-03T02:12:00.554Z | INFO | Signal handlers registered for SIGINT and SIGTERM
+2026-06-03T02:12:00.554Z | INFO | Press Ctrl+C to gracefully shutdown the server
+2026-06-03T02:12:00.594Z | INFO | Starting MCP MSSQL Server from: C:\Users\Administrator\AppData\Local\npm-cache\_npx\ffdd41263fd07c20\node_modules\@liangshanli\mcp-server-mssqlserver\src\server-final.js
+2026-06-03T02:12:00.597Z | INFO | Starting MCP MSSQL Server with environment: | {"MSSQL_SERVER":"192.168.4.162\\BI4SIGHT","MSSQL_PORT":"1433","MSSQL_USER":"sahuntmobi","MSSQL_DATABASE":"bi4sight_ads_1","MSSQL_SCHEMA":"dbo","MSSQL_ENCRYPT":"false","MSSQL_TRUST_SERVER_CERTIFICATE":"true","ALLOW_DDL":"false","ALLOW_DROP":"false","ALLOW_DELETE":"false"}
+2026-06-03T02:12:00.602Z | INFO | MCP MSSQL Server process started with PID: 3312
+2026-06-03T02:12:00.602Z | INFO | Signal handlers registered for SIGINT and SIGTERM
+2026-06-03T02:12:00.602Z | INFO | Press Ctrl+C to gracefully shutdown the server
+2026-06-03T02:12:00.803Z | INFO | Starting MCP MSSQL Server from: C:\Users\Administrator\AppData\Local\npm-cache\_npx\ffdd41263fd07c20\node_modules\@liangshanli\mcp-server-mssqlserver\src\server-final.js
+2026-06-03T02:12:00.805Z | INFO | Starting MCP MSSQL Server with environment: | {"MSSQL_SERVER":"192.168.4.162\\BI4SIGHT","MSSQL_PORT":"1433","MSSQL_USER":"sahuntmobi","MSSQL_DATABASE":"bi4sight_ads_template","MSSQL_SCHEMA":"dbo","MSSQL_ENCRYPT":"false","MSSQL_TRUST_SERVER_CERTIFICATE":"true","ALLOW_DDL":"false","ALLOW_DROP":"false","ALLOW_DELETE":"false"}
+2026-06-03T02:12:00.809Z | INFO | MCP MSSQL Server process started with PID: 9648
+2026-06-03T02:12:00.809Z | INFO | Signal handlers registered for SIGINT and SIGTERM
+2026-06-03T02:12:00.810Z | INFO | Press Ctrl+C to gracefully shutdown the server
+2026-06-03T02:12:01.202Z | INFO | Starting MCP MSSQL Server from: C:\Users\Administrator\AppData\Local\npm-cache\_npx\ffdd41263fd07c20\node_modules\@liangshanli\mcp-server-mssqlserver\src\server-final.js
+2026-06-03T02:12:01.204Z | INFO | Starting MCP MSSQL Server with environment: | {"MSSQL_SERVER":"192.168.4.162\\BI4SIGHT","MSSQL_PORT":"1433","MSSQL_USER":"sahuntmobi","MSSQL_DATABASE":"bi4sight_platform","MSSQL_SCHEMA":"dbo","MSSQL_ENCRYPT":"false","MSSQL_TRUST_SERVER_CERTIFICATE":"true","ALLOW_DDL":"false","ALLOW_DROP":"false","ALLOW_DELETE":"false"}
+2026-06-03T02:12:01.208Z | INFO | MCP MSSQL Server process started with PID: 15880
+2026-06-03T02:12:01.208Z | INFO | Signal handlers registered for SIGINT and SIGTERM
+2026-06-03T02:12:01.208Z | INFO | Press Ctrl+C to gracefully shutdown the server

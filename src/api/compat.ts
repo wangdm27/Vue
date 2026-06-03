@@ -100,5 +100,9 @@ function pickValue(source: Record<string, any>, ...keys: string[]) {
 
 function canTryNextEndpoint(error: any) {
   const status = error.response?.status
+  if (status === 400) {
+    const message = error.response?.data?.message ?? ''
+    return typeof message === 'string' && message.includes('No route matches')
+  }
   return status === 404 || status === 405 || status === 501
 }

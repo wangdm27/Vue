@@ -44,7 +44,7 @@
     </el-table>
 
     <el-dialog v-model="createVisible" title="新增用户" width="640px" class="responsive-dialog">
-      <el-form ref="createFormRef" :model="createForm" :rules="createRules" label-position="top">
+      <el-form ref="createFormRef" :model="createForm" :rules="createRules" label-position="top" @submit.prevent>
         <div class="form-grid two">
           <el-form-item label="用户名" prop="userName">
             <el-input v-model="createForm.userName" />
@@ -78,7 +78,7 @@
     </el-dialog>
 
     <el-dialog v-model="editVisible" title="编辑用户" width="520px">
-      <el-form ref="editFormRef" :model="editForm" :rules="editRules" label-position="top">
+      <el-form ref="editFormRef" :model="editForm" :rules="editRules" label-position="top" @submit.prevent>
         <el-form-item label="显示名称" prop="displayName">
           <el-input v-model="editForm.displayName" />
         </el-form-item>

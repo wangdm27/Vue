@@ -8,13 +8,13 @@ export interface UpdateUserRequest {
 }
 
 const endpoints = {
-  users: ['/users', '/identity/users'],
-  user: (userId: string) => [`/users/${userId}`, `/identity/users/${userId}`],
-  userRoles: (userId: string) => [`/users/${userId}/roles`, `/identity/users/${userId}/roles`],
-  roles: ['/roles', '/authorization/roles'],
-  rolePermissions: (roleId: string) => [`/roles/${roleId}/permissions`, `/authorization/roles/${roleId}/permissions`],
-  permissions: ['/permissions', '/authorization/permissions'],
-  currentMenus: ['/menus/current', '/authorization/menus/current'],
+  users: ['/identity/users'],
+  user: (userId: string) => [`/identity/users/${userId}`],
+  userRoles: (userId: string) => [`/identity/users/${userId}/roles`],
+  roles: ['/authorization/roles'],
+  rolePermissions: (roleId: string) => [`/authorization/roles/${roleId}/permissions`],
+  permissions: ['/authorization/permissions'],
+  currentMenus: ['/authorization/menus/current'],
 }
 
 export const rbacApi = {
