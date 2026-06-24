@@ -14,6 +14,14 @@
       <el-table-column prop="path" label="路径" min-width="180" />
       <el-table-column prop="component" label="组件" min-width="180" />
       <el-table-column prop="permissionCode" label="权限码" min-width="160" />
+      <el-table-column label="按钮" min-width="200">
+        <template #default="{ row }">
+          <el-tag v-for="btn in row.buttons" :key="btn.code" class="tag-gap" effect="plain" size="small">
+            {{ btn.name }}
+          </el-tag>
+          <span v-if="!row.buttons?.length" class="text-muted">—</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="sort" label="排序" width="90" />
       <el-table-column label="操作" width="180" fixed="right">
         <template #default>

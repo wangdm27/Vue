@@ -1,45 +1,38 @@
-import { getArrayPayload, isRecord, pickBoolean, pickString, requestFirst } from './compat'
-import type { CreateTenantRequest, Tenant } from '@/types/rbac'
+import { request, isRecord, pickBoolean, pickString, getArrayPayload } from './compat'
+import type { AddTenantUserRequest, CreateTenantRequest, Tenant, UpdateTenantRequest } from '@/types/rbac'
 
-export interface AddTenantUserRequest {
-  userId: string
-  isTenantOwner: boolean
-}
-
-export interface UpdateTenantRequest {
-  name: string
-  isActive: boolean
-}
+export type { AddTenantUserRequest, UpdateTenantRequest }
 
 const endpoints = {
-  tenants: ['/tenancy/tenants'],
-  current: ['/tenancy/tenants/current'],
-  currentUsers: ['/tenancy/tenants/current/users'],
+  tenants: '/tenancy/tenants',
+  current: '/tenancy/tenants/current',
+  currentUsers: '/tenancy/tenants/current/users',
+  tenant: (id: string) => `/tenancy/tenants/${id}`,
 }
 
 export const tenancyApi = {
   async list() {
-    const response = await requestFirst<unknown>('get', endpoints.tenants)
+    const response = await request<unknown>('get', endpoints.tenants)
     return getArrayPayload<unknown>(response).map(normalizeTenant)
   },
 
   async create(payload: CreateTenantRequest) {
-    const response = await requestFirst<unknown>('post', endpoints.tenants, { data: payload })
+    const response = await request<unknown>('post', endpoints.tenants, { data: payload })
     return normalizeTenant(response)
   },
 
   async current() {
-    const response = await requestFirst<unknown>('get', endpoints.current)
+    const response = await request<unknown>('get', endpoints.current)
     return normalizeTenant(response)
   },
 
   async update(tenantId: string, payload: UpdateTenantRequest) {
-    const response = await requestFirst<unknown>('put', endpoints.tenant(tenantId), { data: payload })
+    const response = await request<unknown>('put', endpoints.tenant(tenantId), { data: payload })
     return normalizeTenant(response)
   },
 
   addUser(payload: AddTenantUserRequest) {
-    return requestFirst<void>('post', endpoints.currentUsers, { data: payload })
+    return request<void>('post', endpoints.currentUsers, { data: payload })
   },
 }
 

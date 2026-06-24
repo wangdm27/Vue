@@ -7,6 +7,62 @@ export const http = axios.create({
   timeout: 60_000,
 })
 
+// ——— Token refresh 逻辑 ———
+
+let refreshPromise: Promise<string | null> | null = null
+
+function tryRefreshToken(): Promise<string | null> {
+  if (refreshPromise) {
+    return refreshPromise
+  }
+
+  refreshPromise = (async () => {
+    const authStore = useAuthStore()
+    const rt = authStore.refreshTokenValue
+
+    if (!rt) {
+      return null
+    }
+
+    try {
+      const response = await axios.post('/api/identity/auth/refresh', { refreshToken: rt })
+      const data = response.data
+
+      if (isRecord(data)) {
+        const newAccessToken = pickStr(data, 'accessToken', 'token')
+        const newRefreshToken = pickStr(data, 'refreshToken')
+
+        if (newAccessToken) {
+          authStore.applyAuthResponse({
+            userId: pickStr(data, 'userId', 'id') || authStore.profile?.userId || '',
+            tenantId: pickStr(data, 'tenantId') || authStore.profile?.tenantId || '',
+            tenantCode: pickStr(data, 'tenantCode') || authStore.profile?.tenantCode || '',
+            userName: pickStr(data, 'userName', 'username') || authStore.profile?.userName || '',
+            displayName: pickStr(data, 'displayName', 'fullName') || authStore.profile?.displayName || '',
+            email: pickStr(data, 'email') || authStore.profile?.email || '',
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken || rt,
+            expiresAt: pickStr(data, 'expiresAt', 'expiration', 'expires') || '',
+            roles: toArray(data.roles) || authStore.profile?.roles || [],
+            permissions: toArray(data.permissions) || authStore.profile?.permissions || [],
+          })
+          return newAccessToken
+        }
+      }
+
+      return null
+    } catch {
+      return null
+    } finally {
+      refreshPromise = null
+    }
+  })()
+
+  return refreshPromise
+}
+
+// ——— 拦截器 ———
+
 http.interceptors.request.use((config) => {
   const authStore = useAuthStore()
 
@@ -23,8 +79,20 @@ http.interceptors.request.use((config) => {
 
 http.interceptors.response.use(
   (response) => unwrapApiResponse(response.data),
-  (error) => {
-    if (error.response?.status === 401) {
+  async (error) => {
+    const originalRequest = error.config
+
+    if (error.response?.status === 401 && !originalRequest._retried) {
+      originalRequest._retried = true
+
+      const newToken = await tryRefreshToken()
+
+      if (newToken) {
+        originalRequest.headers.Authorization = `Bearer ${newToken}`
+        return http(originalRequest)
+      }
+
+      // 刷新也失败，logout
       const authStore = useAuthStore()
       authStore.logout()
       if (window.location.pathname !== '/login') {
@@ -41,6 +109,8 @@ http.interceptors.response.use(
     return Promise.reject(error)
   },
 )
+
+// ——— 工具函数 ———
 
 function unwrapApiResponse(payload: unknown) {
   if (!isRecord(payload)) {
@@ -81,4 +151,18 @@ function getErrorMessage(error: any) {
 
 function isRecord(value: unknown): value is Record<string, any> {
   return typeof value === 'object' && value !== null
+}
+
+function pickStr(source: Record<string, any>, ...keys: string[]) {
+  for (const key of keys) {
+    if (source[key] !== undefined && source[key] !== null) {
+      return String(source[key])
+    }
+  }
+  return ''
+}
+
+function toArray(value: unknown): string[] | null {
+  if (!Array.isArray(value)) return null
+  return value.map(String)
 }

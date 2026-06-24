@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
-import { Building2, KeyRound, LayoutDashboard, Menu, ShieldCheck, Users } from 'lucide-vue-next'
+import { Building2, ClipboardList, KeyRound, LayoutDashboard, Menu, ShieldCheck, Users } from 'lucide-vue-next'
 
 export interface AdminRouteMeta {
   title: string
@@ -44,5 +44,11 @@ export const adminRoutes: RouteRecordRaw[] = [
     name: 'Permissions',
     component: () => import('@/views/rbac/PermissionListView.vue'),
     meta: { title: '权限字典', icon: KeyRound, permission: 'permission.view' },
+  },
+  {
+    path: '/audit-logs',
+    name: 'AuditLogs',
+    component: () => import('@/views/rbac/AuditLogView.vue'),
+    meta: { title: '审计日志', icon: ClipboardList, permission: 'audit.view' },
   },
 ]

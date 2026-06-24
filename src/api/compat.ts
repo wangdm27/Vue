@@ -7,28 +7,23 @@ type RequestConfig = {
   data?: unknown
 }
 
-export async function requestFirst<T>(method: HttpMethod, urls: string[], config: RequestConfig = {}) {
-  let lastError: unknown
+/** 单路径请求 — API路径已固定，不再需要多路径fallback */
+export async function request<T>(method: HttpMethod, url: string, config: RequestConfig = {}): Promise<T> {
+  return http.request<unknown, T>({
+    url,
+    method,
+    params: config.params,
+    data: config.data,
+  } as any)
+}
 
-  for (const [index, url] of urls.entries()) {
-    try {
-      return await http.request<unknown, T>({
-        url,
-        method,
-        params: config.params,
-        data: config.data,
-        suppressError: index < urls.length - 1,
-      } as any)
-    } catch (error) {
-      lastError = error
-
-      if (index === urls.length - 1 || !canTryNextEndpoint(error)) {
-        throw error
-      }
-    }
-  }
-
-  throw lastError
+/**
+ * 向后兼容：仍接受 string[] 但只用第一个元素。
+ * 已有调用方逐步迁移到 request() 后可删除。
+ */
+export async function requestFirst<T>(method: HttpMethod, urls: string[], config: RequestConfig = {}): Promise<T> {
+  const url = urls[0]!
+  return request<T>(method, url, config)
 }
 
 export function getArrayPayload<T>(payload: unknown): T[] {
@@ -96,13 +91,4 @@ function pickValue(source: Record<string, any>, ...keys: string[]) {
   }
 
   return undefined
-}
-
-function canTryNextEndpoint(error: any) {
-  const status = error.response?.status
-  if (status === 400) {
-    const message = error.response?.data?.message ?? ''
-    return typeof message === 'string' && message.includes('No route matches')
-  }
-  return status === 404 || status === 405 || status === 501
 }

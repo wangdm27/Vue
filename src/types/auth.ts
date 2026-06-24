@@ -20,6 +20,7 @@ export interface AuthResponse {
   displayName: string
   email: string
   accessToken: string
+  refreshToken: string
   expiresAt: string
   roles: string[]
   permissions: string[]
@@ -34,4 +35,25 @@ export interface UserProfile {
   tenantCode: string
   roles: string[]
   permissions: string[]
+}
+
+export interface RefreshTokenRequest {
+  refreshToken: string
+}
+
+export interface ChangePasswordRequest {
+  oldPassword: string
+  newPassword: string
+  confirmPassword: string
+}
+
+export interface ForgotPasswordRequest {
+  tenantCode: string
+  email: string
+}
+
+export interface ConfirmResetPasswordRequest {
+  email: string
+  token: string
+  newPassword: string
 }

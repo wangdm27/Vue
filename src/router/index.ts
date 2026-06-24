@@ -25,6 +25,18 @@ const routes: RouteRecordRaw[] = [
     meta: { public: true },
   },
   {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: () => import('@/views/auth/ForgotPasswordView.vue'),
+    meta: { public: true },
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: () => import('@/views/auth/ResetPasswordView.vue'),
+    meta: { public: true },
+  },
+  {
     path: '/',
     name: 'AdminRoot',
     component: AdminLayout,

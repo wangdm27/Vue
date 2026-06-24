@@ -20,6 +20,7 @@
         </el-form-item>
         <el-button type="primary" size="large" :loading="loading" @click="submit">登录系统</el-button>
         <div class="auth-links">
+          <RouterLink to="/forgot-password">忘记密码？</RouterLink>
           <RouterLink to="/register">已有租户？注册用户</RouterLink>
           <RouterLink to="/tenant-register">没有租户？创建租户</RouterLink>
         </div>

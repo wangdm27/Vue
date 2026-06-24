@@ -11,7 +11,18 @@
       </div>
     </div>
 
-    <el-table v-loading="loading" :data="users" class="data-table" row-key="userId">
+    <div class="filter-bar">
+      <el-input v-model="queryParams.keyword" placeholder="搜索用户名/显示名称/邮箱" clearable style="width: 260px" @clear="loadUsers" @keyup.enter="loadUsers">
+        <template #prefix><Search :size="16" /></template>
+      </el-input>
+      <el-select v-model="queryParams.isActive" placeholder="状态" clearable style="width: 120px" @change="loadUsers">
+        <el-option label="启用" :value="true" />
+        <el-option label="停用" :value="false" />
+      </el-select>
+      <el-button type="primary" @click="loadUsers">查询</el-button>
+    </div>
+
+    <el-table v-loading="loading" :data="pagedUsers.items" class="data-table" row-key="userId">
       <el-table-column prop="userName" label="用户名" min-width="130" />
       <el-table-column prop="displayName" label="显示名称" min-width="150" />
       <el-table-column prop="email" label="邮箱" min-width="220" />
@@ -25,10 +36,11 @@
           <el-tag :type="row.isActive ? 'success' : 'info'">{{ row.isActive ? '启用' : '停用' }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="320" fixed="right">
+      <el-table-column label="操作" width="400" fixed="right">
         <template #default="{ row }">
           <el-button v-permission="'user.update'" text :icon="Pencil" @click="openEdit(row)">编辑</el-button>
           <el-button v-permission="'user.assign_roles'" text :icon="ShieldCheck" @click="openRoles(row)">分配角色</el-button>
+          <el-button v-permission="'user.update'" text :icon="KeyRound" @click="openResetPassword(row)">重置密码</el-button>
           <el-button
             v-permission="'user.delete'"
             text
@@ -42,6 +54,18 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <div class="pagination-bar" v-if="pagedUsers.totalCount > 0">
+      <el-pagination
+        v-model:current-page="queryParams.pageIndex"
+        v-model:page-size="queryParams.pageSize"
+        :total="pagedUsers.totalCount"
+        :page-sizes="[10, 20, 50]"
+        layout="total, sizes, prev, pager, next"
+        @size-change="loadUsers"
+        @current-change="loadUsers"
+      />
+    </div>
 
     <el-dialog v-model="createVisible" title="新增用户" width="640px" class="responsive-dialog">
       <el-form ref="createFormRef" :model="createForm" :rules="createRules" label-position="top" @submit.prevent>
@@ -107,6 +131,18 @@
         <el-button type="primary" :loading="saving" @click="saveRoles">保存</el-button>
       </template>
     </el-drawer>
+
+    <el-dialog v-model="resetPwdVisible" title="重置用户密码" width="440px">
+      <el-form ref="resetPwdFormRef" :model="resetPwdForm" :rules="resetPwdRules" label-position="top" @submit.prevent>
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input v-model="resetPwdForm.newPassword" type="password" show-password placeholder="至少 6 位" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="resetPwdVisible = false">取消</el-button>
+        <el-button type="primary" :loading="saving" @click="saveResetPassword">确认重置</el-button>
+      </template>
+    </el-dialog>
   </section>
 </template>
 
@@ -114,21 +150,30 @@
 import { nextTick, onMounted, reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Pencil, Plus, RefreshCw, ShieldCheck, Trash2 } from 'lucide-vue-next'
+import { KeyRound, Pencil, Plus, RefreshCw, Search, ShieldCheck, Trash2 } from 'lucide-vue-next'
 import { rbacApi } from '@/api/rbac'
-import type { CreateUserRequest, Role, UserListItem } from '@/types/rbac'
+import type { CreateUserRequest, PagedResult, Role, UserListItem, UserQueryParams } from '@/types/rbac'
 
-const users = ref<UserListItem[]>([])
+const pagedUsers = ref<PagedResult<UserListItem>>({ items: [], pageIndex: 1, pageSize: 20, totalCount: 0, totalPages: 0 })
 const roles = ref<Role[]>([])
 const loading = ref(false)
 const saving = ref(false)
 const createVisible = ref(false)
 const editVisible = ref(false)
 const roleVisible = ref(false)
+const resetPwdVisible = ref(false)
 const createFormRef = ref<FormInstance>()
 const editFormRef = ref<FormInstance>()
+const resetPwdFormRef = ref<FormInstance>()
 const selectedUser = ref<UserListItem | null>(null)
 const selectedRoleIds = ref<string[]>([])
+
+const queryParams = reactive<UserQueryParams>({
+  keyword: '',
+  isActive: undefined,
+  pageIndex: 1,
+  pageSize: 20,
+})
 
 const createForm = reactive<CreateUserRequest>({
   userName: '',
@@ -146,6 +191,11 @@ const editForm = reactive({
   isActive: true,
 })
 
+const resetPwdForm = reactive({
+  userId: '',
+  newPassword: '',
+})
+
 const createRules: FormRules = {
   userName: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -161,6 +211,10 @@ const editRules: FormRules = {
   email: [{ required: true, type: 'email', message: '请输入有效邮箱', trigger: 'blur' }],
 }
 
+const resetPwdRules: FormRules = {
+  newPassword: [{ required: true, min: 6, message: '密码至少 6 位', trigger: 'blur' }],
+}
+
 onMounted(async () => {
   await Promise.all([loadUsers(), loadRoles()])
 })
@@ -168,7 +222,7 @@ onMounted(async () => {
 async function loadUsers() {
   loading.value = true
   try {
-    users.value = await rbacApi.users()
+    pagedUsers.value = await rbacApi.users(queryParams)
   } finally {
     loading.value = false
   }
@@ -198,6 +252,13 @@ function openRoles(row: UserListItem) {
   selectedUser.value = row
   selectedRoleIds.value = roles.value.filter((role) => row.roles.includes(role.code)).map((role) => role.roleId)
   roleVisible.value = true
+}
+
+function openResetPassword(row: UserListItem) {
+  resetPwdForm.userId = row.userId
+  resetPwdForm.newPassword = ''
+  resetPwdVisible.value = true
+  nextTick(() => resetPwdFormRef.value?.clearValidate())
 }
 
 async function createUser() {
@@ -259,6 +320,18 @@ async function saveRoles() {
     ElMessage.success('角色已分配')
     roleVisible.value = false
     await loadUsers()
+  } finally {
+    saving.value = false
+  }
+}
+
+async function saveResetPassword() {
+  await resetPwdFormRef.value?.validate()
+  saving.value = true
+  try {
+    await rbacApi.resetUserPassword(resetPwdForm.userId, { newPassword: resetPwdForm.newPassword })
+    ElMessage.success('密码已重置')
+    resetPwdVisible.value = false
   } finally {
     saving.value = false
   }

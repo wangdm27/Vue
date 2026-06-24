@@ -1,5 +1,5 @@
-import { getArrayPayload, isRecord, pickBoolean, pickNumber, pickString, requestFirst, toStringArray } from './compat'
-import type { CreateRoleRequest, CreateUserRequest, MenuNode, Permission, Role, UserListItem } from '@/types/rbac'
+import { request, isRecord, pickBoolean, pickNumber, pickString, toStringArray, getArrayPayload } from './compat'
+import type { CreateRoleRequest, CreateUserRequest, MenuButton, MenuNode, Permission, PagedResult, ResetPasswordRequest, Role, RolePermissionSummary, UpdateRoleRequest, UserListItem, UserQueryParams, AssignRoleMenusRequest } from '@/types/rbac'
 
 export interface UpdateUserRequest {
   displayName: string
@@ -7,62 +7,105 @@ export interface UpdateUserRequest {
   isActive: boolean
 }
 
-const endpoints = {
-  users: ['/identity/users'],
-  user: (userId: string) => [`/identity/users/${userId}`],
-  userRoles: (userId: string) => [`/identity/users/${userId}/roles`],
-  roles: ['/authorization/roles'],
-  rolePermissions: (roleId: string) => [`/authorization/roles/${roleId}/permissions`],
-  permissions: ['/authorization/permissions'],
-  currentMenus: ['/authorization/menus/current'],
-}
-
 export const rbacApi = {
-  async users() {
-    const response = await requestFirst<unknown>('get', endpoints.users)
-    return getArrayPayload<unknown>(response).map(normalizeUser)
+  // ——— 用户 ———
+
+  async users(params?: UserQueryParams): Promise<PagedResult<UserListItem>> {
+    const response = await request<unknown>('get', '/identity/users', {
+      params: params as Record<string, unknown>,
+    })
+    return normalizePagedUsers(response)
+  },
+
+  async getUser(userId: string) {
+    const response = await request<unknown>('get', `/identity/users/${userId}`)
+    return normalizeUser(response)
   },
 
   async createUser(payload: CreateUserRequest) {
-    const response = await requestFirst<unknown>('post', endpoints.users, { data: payload })
+    const response = await request<unknown>('post', '/identity/users', { data: payload })
     return normalizeUser(response)
   },
 
   updateUser(userId: string, payload: UpdateUserRequest) {
-    return requestFirst<unknown>('put', endpoints.user(userId), { data: payload })
+    return request<void>('put', `/identity/users/${userId}`, { data: payload })
   },
 
   deleteUser(userId: string) {
-    return requestFirst<void>('delete', endpoints.user(userId))
+    return request<void>('delete', `/identity/users/${userId}`)
   },
 
   assignUserRoles(userId: string, roleIds: string[]) {
-    return requestFirst<void>('put', endpoints.userRoles(userId), { data: { roleIds } })
+    return request<void>('put', `/identity/users/${userId}/roles`, { data: { roleIds } })
   },
 
+  resetUserPassword(userId: string, payload: ResetPasswordRequest) {
+    return request<void>('put', `/identity/users/${userId}/password`, { data: payload })
+  },
+
+  // ——— 角色 ———
+
   async roles() {
-    const response = await requestFirst<unknown>('get', endpoints.roles)
+    const response = await request<unknown>('get', '/authorization/roles')
     return getArrayPayload<unknown>(response).map(normalizeRole)
   },
 
   async createRole(payload: CreateRoleRequest) {
-    const response = await requestFirst<unknown>('post', endpoints.roles, { data: payload })
+    const response = await request<unknown>('post', '/authorization/roles', { data: payload })
     return normalizeRole(response)
   },
 
-  assignRolePermissions(roleId: string, permissionIds: string[]) {
-    return requestFirst<void>('put', endpoints.rolePermissions(roleId), { data: { permissionIds } })
+  updateRole(roleId: string, payload: UpdateRoleRequest) {
+    return request<void>('put', `/authorization/roles/${roleId}`, { data: payload })
   },
 
+  deleteRole(roleId: string) {
+    return request<void>('delete', `/authorization/roles/${roleId}`)
+  },
+
+  async getRolePermissions(roleId: string): Promise<RolePermissionSummary> {
+    const response = await request<unknown>('get', `/authorization/roles/${roleId}/permissions`)
+    return normalizeRolePermissionSummary(response)
+  },
+
+  assignRolePermissions(roleId: string, permissionIds: string[]) {
+    return request<void>('put', `/authorization/roles/${roleId}/permissions`, { data: { permissionIds } })
+  },
+
+  assignRoleMenus(roleId: string, payload: AssignRoleMenusRequest) {
+    return request<void>('put', `/authorization/roles/${roleId}/menus`, { data: payload })
+  },
+
+  // ——— 权限 ———
+
   async permissions() {
-    const response = await requestFirst<unknown>('get', endpoints.permissions)
+    const response = await request<unknown>('get', '/authorization/permissions')
     return getArrayPayload<unknown>(response).map(normalizePermission)
   },
 
+  // ——— 菜单 ———
+
   async currentMenus() {
-    const response = await requestFirst<unknown>('get', endpoints.currentMenus)
+    const response = await request<unknown>('get', '/authorization/menus/current')
     return getArrayPayload<unknown>(response).map(normalizeMenuNode)
   },
+}
+
+// ——— normalize 函数 ———
+
+function normalizePagedUsers(payload: unknown): PagedResult<UserListItem> {
+  if (!isRecord(payload)) {
+    return { items: [], pageIndex: 1, pageSize: 20, totalCount: 0, totalPages: 0 }
+  }
+
+  const items = getArrayPayload<unknown>(payload).map(normalizeUser)
+  return {
+    items,
+    pageIndex: pickNumber(payload, 1, 'pageIndex'),
+    pageSize: pickNumber(payload, 20, 'pageSize'),
+    totalCount: pickNumber(payload, 0, 'totalCount'),
+    totalPages: pickNumber(payload, 0, 'totalPages'),
+  }
 }
 
 function normalizeUser(payload: unknown): UserListItem {
@@ -120,7 +163,31 @@ function normalizeMenuNode(payload: unknown): MenuNode {
     icon: pickString(item, 'icon'),
     sort: pickNumber(item, 0, 'sort', 'order', 'displayOrder'),
     permissionCode: pickString(item, 'permissionCode'),
+    buttons: normalizeMenuButtons(item.buttons),
     children: getArrayPayload<unknown>(item.children).map(normalizeMenuNode),
+  }
+}
+
+function normalizeMenuButtons(payload: unknown): MenuButton[] {
+  if (!Array.isArray(payload)) return []
+  return payload.map((item) => {
+    const rec = isRecord(item) ? item : {}
+    return {
+      permissionId: pickString(rec, 'permissionId', 'id'),
+      code: pickString(rec, 'code'),
+      name: pickString(rec, 'name'),
+    }
+  })
+}
+
+function normalizeRolePermissionSummary(payload: unknown): RolePermissionSummary {
+  const item = asRecord(payload)
+
+  return {
+    permissionIds: toStringArray(item.permissionIds),
+    menuPermissionIds: toStringArray(item.menuPermissionIds),
+    buttonPermissionIds: toStringArray(item.buttonPermissionIds),
+    apiPermissionIds: toStringArray(item.apiPermissionIds),
   }
 }
 

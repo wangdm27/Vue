@@ -36,6 +36,12 @@ export interface Permission {
   route: string
 }
 
+export interface MenuButton {
+  permissionId: string
+  code: string
+  name: string
+}
+
 export interface MenuNode {
   menuId: string
   code: string
@@ -45,6 +51,7 @@ export interface MenuNode {
   icon: string
   sort: number
   permissionCode: string
+  buttons: MenuButton[]
   children: MenuNode[]
 }
 
@@ -55,6 +62,16 @@ export interface CreateTenantRequest {
   adminEmail: string
   adminDisplayName: string
   adminPassword: string
+}
+
+export interface UpdateTenantRequest {
+  name: string
+  isActive: boolean
+}
+
+export interface AddTenantUserRequest {
+  userId: string
+  isTenantOwner: boolean
 }
 
 export interface CreateUserRequest {
@@ -71,4 +88,62 @@ export interface CreateRoleRequest {
   name: string
   description: string
   isDefault: boolean
+}
+
+export interface UpdateRoleRequest {
+  code: string
+  name: string
+  description: string
+  isDefault: boolean
+}
+
+export interface PagedResult<T> {
+  items: T[]
+  pageIndex: number
+  pageSize: number
+  totalCount: number
+  totalPages: number
+}
+
+export interface UserQueryParams {
+  keyword?: string
+  isActive?: boolean
+  pageIndex?: number
+  pageSize?: number
+}
+
+export interface RolePermissionSummary {
+  permissionIds: string[]
+  menuPermissionIds: string[]
+  buttonPermissionIds: string[]
+  apiPermissionIds: string[]
+}
+
+export interface AssignRoleMenusRequest {
+  menuPermissionIds: string[]
+  buttonPermissionIds: string[]
+}
+
+export interface ResetPasswordRequest {
+  newPassword: string
+}
+
+export interface AuditLogItem {
+  auditLogId: string
+  entityType: string
+  entityId: string
+  action: string
+  performedBy: string
+  performedAt: string
+  changes: string
+}
+
+export interface AuditLogQuery {
+  entityType?: string
+  entityId?: string
+  action?: string
+  startTime?: string
+  endTime?: string
+  pageIndex?: number
+  pageSize?: number
 }

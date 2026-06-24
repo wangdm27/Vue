@@ -1,26 +1,38 @@
-import { requestFirst, isRecord, pickRecord, pickString, toStringArray } from './compat'
-import type { AuthResponse, LoginRequest, RegisterRequest, UserProfile } from '@/types/auth'
-
-const authEndpoints = {
-  login: ['/auth/login', '/identity/auth/login'],
-  register: ['/auth/register', '/identity/auth/register'],
-  me: ['/auth/me', '/identity/auth/me'],
-}
+import { request } from './compat'
+import { isRecord, pickRecord, pickString, toStringArray } from './compat'
+import type { AuthResponse, LoginRequest, RegisterRequest, UserProfile, RefreshTokenRequest, ChangePasswordRequest, ForgotPasswordRequest, ConfirmResetPasswordRequest } from '@/types/auth'
 
 export const authApi = {
   async login(payload: LoginRequest) {
-    const response = await requestFirst<unknown>('post', authEndpoints.login, { data: payload })
+    const response = await request<unknown>('post', '/identity/auth/login', { data: payload })
     return normalizeAuthResponse(response)
   },
 
   async register(payload: RegisterRequest) {
-    const response = await requestFirst<unknown>('post', authEndpoints.register, { data: payload })
+    const response = await request<unknown>('post', '/identity/auth/register', { data: payload })
     return normalizeAuthResponse(response)
   },
 
   async me() {
-    const response = await requestFirst<unknown>('get', authEndpoints.me)
+    const response = await request<unknown>('get', '/identity/auth/me')
     return normalizeUserProfile(response)
+  },
+
+  async refreshToken(refreshToken: string) {
+    const response = await request<unknown>('post', '/identity/auth/refresh', { data: { refreshToken } })
+    return normalizeAuthResponse(response)
+  },
+
+  changePassword(payload: ChangePasswordRequest) {
+    return request<void>('put', '/identity/auth/change-password', { data: payload })
+  },
+
+  forgotPassword(payload: ForgotPasswordRequest) {
+    return request<void>('post', '/identity/auth/forgot-password', { data: payload })
+  },
+
+  resetPassword(payload: ConfirmResetPasswordRequest) {
+    return request<void>('post', '/identity/auth/reset-password', { data: payload })
   },
 }
 
@@ -40,6 +52,7 @@ function normalizeAuthResponse(payload: unknown): AuthResponse {
     displayName: pickString(payload, 'displayName', 'fullName') || pickString(user, 'displayName', 'fullName'),
     email: pickString(payload, 'email') || pickString(user, 'email'),
     accessToken: pickString(payload, 'accessToken', 'token', 'jwt', 'jwtToken'),
+    refreshToken: pickString(payload, 'refreshToken'),
     expiresAt: pickString(payload, 'expiresAt', 'expiration', 'expires'),
     roles: toStringArray(payload.roles ?? user.roles),
     permissions: toStringArray(payload.permissions ?? user.permissions),
